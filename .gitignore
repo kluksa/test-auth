@@ -1,0 +1,17 @@
+# Maven
+backend/target/
+backend/.mvn/
+backend/*.iml
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store

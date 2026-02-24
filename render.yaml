@@ -1,0 +1,39 @@
+services:
+  # Spring Boot 4 backend
+  - type: web
+    name: test-auth-backend
+    runtime: java
+    plan: free
+    buildCommand: cd backend && mvn clean package -DskipTests
+    startCommand: java -jar backend/target/auth-backend-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: GOOGLE_CLIENT_ID
+        sync: false   # set manually in Render dashboard
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false   # set manually in Render dashboard
+      - key: FRONTEND_URL
+        fromService:
+          name: test-auth-frontend
+          type: web
+          property: host
+          # will be set to https://<frontend-slug>.onrender.com
+
+  # React 19 frontend (static site)
+  - type: web
+    name: test-auth-frontend
+    runtime: static
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_GOOGLE_CLIENT_ID
+        value: 807670708647-blkq8poglh575e06qu675bsuopjpphmc.apps.googleusercontent.com
+      - key: VITE_API_URL
+        fromService:
+          name: test-auth-backend
+          type: web
+          property: host
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
