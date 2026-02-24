@@ -21,8 +21,17 @@ public class SecurityConfig {
     @Value("${app.frontend-url}")
     private String frontendUrl;
 
+    private String resolvedFrontendUrl() {
+        String url = frontendUrl.trim();
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "https://" + url;
+        }
+        return url.replaceAll("/+$", ""); // strip trailing slashes
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        String frontend = resolvedFrontendUrl();
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
@@ -34,11 +43,11 @@ public class SecurityConfig {
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
             )
             .oauth2Login(oauth2 -> oauth2
-                .defaultSuccessUrl(frontendUrl + "/", true)
-                .failureUrl(frontendUrl + "/?error=login_failed")
+                .defaultSuccessUrl(frontend + "/", true)
+                .failureUrl(frontend + "/?error=login_failed")
             )
             .logout(logout -> logout
-                .logoutSuccessUrl(frontendUrl + "/")
+                .logoutSuccessUrl(frontend + "/")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
             );
@@ -49,7 +58,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(frontendUrl));
+        config.setAllowedOrigins(List.of(resolvedFrontendUrl()));
         config.setAllowedMethods(List.of("GET", "POST", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
