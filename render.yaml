@@ -12,10 +12,7 @@ services:
       - key: GOOGLE_CLIENT_SECRET
         sync: false
       - key: FRONTEND_URL
-        fromService:
-          name: test-auth-frontend
-          type: web
-          property: host
+        value: https://test-auth-frontend-28oq.onrender.com
 
   # React 19 frontend (static site)
   - type: web
@@ -27,10 +24,7 @@ services:
       - key: VITE_GOOGLE_CLIENT_ID
         value: 807670708647-blkq8poglh575e06qu675bsuopjpphmc.apps.googleusercontent.com
       - key: VITE_API_URL
-        fromService:
-          name: test-auth-backend
-          type: web
-          property: host
+        value: https://test-auth-backend-loiu.onrender.com
     routes:
       - type: rewrite
         source: /*
