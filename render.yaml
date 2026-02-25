@@ -22,7 +22,7 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_GOOGLE_CLIENT_ID
-        value: 807670708647-blkq8poglh575e06qu675bsuopjpphmc.apps.googleusercontent.com
+        value: 807670708647-1u5n5p90bset969m1lh9ee5i2kog43q7.apps.googleusercontent.com
       - key: VITE_API_URL
         value: https://test-auth-backend-loiu.onrender.com
     routes:
