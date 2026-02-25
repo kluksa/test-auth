@@ -67,7 +67,7 @@ Deployed on Render via `render.yaml`: backend as a Docker service, frontend as a
 
 - **No Java runtime** — backend must use `runtime: docker`; `runtime: java` is invalid
 - **Static sites have no `plan` field** — omit it; Docker/native web services use `plan: free`
-- **`fromService.property: host` returns bare hostname** (e.g. `test-auth-frontend.onrender.com`) — no `https://` prefix. `resolvedFrontendUrl()` in SecurityConfig handles this, but any new URL usage must account for it
+- **`fromService.property: host` is unreliable** — returns only the service slug (e.g. `test-auth-backend-loiu`), not the full hostname. Do not use it for URL construction. Hardcode the full `https://<slug>.onrender.com` URLs directly in `render.yaml` instead
 - **`GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` must be set manually** in the Render dashboard (`sync: false` in render.yaml); never commit actual values
 - After deploying, add the backend callback URL to Google Console: `https://<backend>.onrender.com/login/oauth2/code/google`
 
