@@ -18,7 +18,7 @@ public class UserController {
         if (user == null) {
             return ResponseEntity.ok(Map.of("authenticated", false));
         }
-        return ResponseEntity.ok(Map.of(
+        return ResponseEntity.ok(Map.<String, Object>of(
             "authenticated", true,
             "name", user.getAttribute("name"),
             "email", user.getAttribute("email"),
