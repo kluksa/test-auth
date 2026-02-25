@@ -2,7 +2,14 @@ import { useEffect, useState } from 'react';
 import { getUser, getHello, postHello } from './api';
 import './App.css';
 
-const BACKEND_URL = import.meta.env.VITE_API_URL;
+function normalizeUrl(url) {
+  if (!url) return url;
+  const trimmed = url.replace(/\/+$/, '');
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+  return 'https://' + trimmed;
+}
+
+const BACKEND_URL = normalizeUrl(import.meta.env.VITE_API_URL);
 
 export default function App() {
   const [user, setUser] = useState(null);

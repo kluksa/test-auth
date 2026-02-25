@@ -1,7 +1,14 @@
 import axios from 'axios';
 
+function normalizeUrl(url) {
+  if (!url) return url;
+  const trimmed = url.replace(/\/+$/, '');
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+  return 'https://' + trimmed;
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: normalizeUrl(import.meta.env.VITE_API_URL),
   withCredentials: true,
 });
 
