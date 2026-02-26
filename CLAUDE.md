@@ -71,6 +71,20 @@ Deployed on Render via `render.yaml`: backend as a Docker service, frontend as a
 - **`GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` must be set manually** in the Render dashboard (`sync: false` in render.yaml); never commit actual values
 - After deploying, add the backend callback URL to Google Console: `https://<backend>.onrender.com/login/oauth2/code/google`
 
+## Known Code Gotchas
+
+- **`Map.of()` with mixed types** — `Map.of("authenticated", true, "name", stringValue)` infers `V=Boolean` from the first entry and throws `ClassCastException` at runtime. Always use `Map.<String, Object>of(...)` when mixing booleans and strings.
+- **Session cookie cross-origin** — frontend and backend on different domains requires `server.servlet.session.cookie.same-site: none` + `secure: true` in `application.yml`, plus `allowCredentials(true)` in CORS config, plus `withCredentials: true` in axios. All three are required.
+- **OAuth login must use `window.location.href`** — never use `fetch`/axios to initiate OAuth; the browser must follow the redirect chain to set cookies correctly.
+
+## Render CLI Notes
+
+- Check logs: `render logs --resources <serviceId> --output text --limit 50`
+- Filter errors: `render logs --resources <serviceId> --output text --level error`
+- Search text: `render logs --resources <serviceId> --output text --text "keyword"`
+- **No env var management command** — use Render dashboard or API directly; `render env set` does not exist
+- Service IDs: backend=`srv-d6f2o3jh46gs73e3odeg`, frontend=`srv-d6f2o4bh46gs73e3oe7g`
+
 ## GitHub Push
 
 - SSH key on this machine belongs to a different account (`kluksaAg`); push via HTTPS token: `GH_TOKEN=$(gh auth token) git remote set-url origin "https://kluksa:$(gh auth token)@github.com/kluksa/test-auth.git" && git push` then reset the remote URL
